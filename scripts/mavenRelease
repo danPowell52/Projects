@@ -91,7 +91,8 @@ cp payara-javadoc web/payara-embedded-web-$NEW_VERSION-javadoc.zip
 #micro has its own so it will be done later
 cp payara-javadoc all/payara-embedded-all-$NEW_VERSION-javadoc.zip
 
-cp  payara-micro-$NEW_VERSION-javadoc.zip /micro/
+cp  payara-micro-$NEW_VERSION-javadoc.zip micro/
+
 
 cp payara-sources.zip payara/payara-$NEW_VERSION-sources.zip
 cp payara-sources.zip payara-ml/payara-ml-$NEW_VERSION-sources.zip
@@ -101,6 +102,70 @@ cp payara-sources.zip payara-minimal/payara-minimal-$NEW_VERSION-sources.zip
 cp payara-sources.zip web/payara-embedded-web-$NEW_VERSION-sources.zip
 cp payara-sources.zip micro/payara-micro-$NEW_VERSION-sources.zip
 cp payara-sources.zip all/payara-embedded-all-$NEW_VERSION-sources.zip
+
+
+
+bundle(){
+	jar -cvf $1-$NEW_VERSION.jar $1-$NEW_VERSION-javadoc.zip $1-$NEW_VERSION-javadoc.zip.asc $1-$NEW_VERSION-sources.zip $1-$NEW_VERSION-sources.zip.asc $1-$NEW_VERSION.zip $1-$NEW_VERSION.zip pom.xml pom.xml.asc
+}
+
+#Create gpg key signed versions of all the files
+#for payara
+cd $SOURCES_HOME/payara
+gpg -ab payara-$NEW_VERSION-javadoc.zip
+gpg -ab payara-$NEW_VERSION-sources.zip
+gpg -ab pom.xml
+gpg -ab payara-$NEW_VERSION.zip
+bundle payara
+
+cd $SOURCES_HOME/payara-ml
+gpg -ab payara-ml-$NEW_VERSION-javadoc.zip
+gpg -ab payara-ml-$NEW_VERSION-sources.zip
+gpg -ab pom.xml
+gpg -ab payara-ml-$NEW_VERSION.zip
+bundle payara-ml
+
+cd $SOURCES_HOME/payara-web
+gpg -ab payara-web-$NEW_VERSION-javadoc.zip
+gpg -ab payara-web-$NEW_VERSION-sources.zip
+gpg -ab pom.xml
+gpg -ab payara-web-$NEW_VERSION.zip
+bundle payara-web
+
+cd $SOURCES_HOME/payara-web-ml
+gpg -ab payara-web-ml-$NEW_VERSION-javadoc.zip
+gpg -ab payara-web-ml-$NEW_VERSION-sources.zip
+gpg -ab pom.xml
+gpg -ab payara-web-ml-$NEW_VERSION.zip
+bundle payara-web-ml
+
+cd $SOURCES_HOME/payara-minimal
+gpg -ab payara-minimal-$NEW_VERSION-javadoc.zip
+gpg -ab payara-minimal-$NEW_VERSION-sources.zip
+gpg -ab pom.xml
+gpg -ab payara-minimal-$NEW_VERSION.zip
+bundle payara-minimal
+
+cd $SOURCES_HOME/web
+gpg -ab payara-embedded-web-$NEW_VERSION-javadoc.zip
+gpg -ab payara-embedded-web-$NEW_VERSION-sources.zip
+gpg -ab pom.xml
+gpg -ab payara-embedded-web-$NEW_VERSION.zip
+bundle payara-embedded-web
+
+cd $SOURCES_HOME/micro
+gpg -ab payara-micro-$NEW_VERSION-javadoc.zip
+gpg -ab payara-micro-$NEW_VERSION-sources.zip
+gpg -ab pom.xml
+gpg -ab payara-micro-$NEW_VERSION.zip
+bundle payara-micro
+
+cd $SOURCES_HOME/all
+gpg -ab payara-embedded-all-$NEW_VERSION-javadoc.zip
+gpg -ab payara-embedded-all-$NEW_VERSION-sources.zip
+gpg -ab pom.xml
+gpg -ab payara-embedded-all-$NEW_VERSION.zip
+bundle payara-embedded-all
 
 
 
