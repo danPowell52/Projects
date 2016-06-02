@@ -1,0 +1,130 @@
+#!/bin/sh
+
+#assign all the variables
+while getopts ":p:o:n:r:" opt; do
+
+	case $opt in 
+		p)
+			echo $OPTARG
+			echo "HELLOES"
+			PAYARA_HOME=$OPTARG
+			;;
+		r)
+			echo $OPTARG
+			echo "HELLOES"
+			REMOTE_NAME=$OPTARG
+			;;
+		n)
+			echo $OPTARG
+			echo "HELLOES"
+			NEW_VERSION=$OPTARG
+			;;
+
+	esac
+done
+
+cd $PAYARA_HOME
+cd ..
+mkdir sources
+
+SOURCES_HOME=$(pwd)/sources
+echo "SOURCES VALUE IS = " $SOURCES_HOME
+
+#create source and javadocs
+cd $PAYARA_HOME
+git archive --format zip --output $SOURCES_HOME/payara-sources.zip HEAD
+
+jar cf payara-javadoc README.md
+cp payara-javadoc $SOURCES_HOME/
+
+git archive --format zip --output $SOURCES_HOME/payara-micro-$NEW_VERSION-javadoc.zip $REMOTE_NAME/gh-pages
+
+cd $SOURCES_HOME
+jar cf payara-micro-$NEW_VERSION-javadoc.jar payara-micro-$NEW_VERSION-javadoc.zip
+
+
+#get all the poms and zips and place them in the SOURCES_HOME
+cd $SOURCES_HOME
+mkdir payara
+mkdir payara-ml
+mkdir payara-web
+mkdir payara-web-ml
+mkdir payara-minimal
+mkdir web
+mkdir micro
+mkdir all
+
+cp $PAYARA_HOME/appserver/distributions/payara/target/payara-$NEW_VERSION.zip $SOURCES_HOME/payara/
+cp $PAYARA_HOME/appserver/distributions/payara/pom.xml $SOURCES_HOME/payara/
+
+cp $PAYARA_HOME/appserver/distributions/payara-ml/target/payara-ml-$NEW_VERSION.zip $SOURCES_HOME/payara-ml/
+cp $PAYARA_HOME/appserver/distributions/payara-ml/pom.xml $SOURCES_HOME/payara-ml/
+
+cp $PAYARA_HOME/appserver/distributions/payara-web/target/payara-web-$NEW_VERSION.zip $SOURCES_HOME/payara-web/
+cp $PAYARA_HOME/appserver/distributions/payara-web/pom.xml $SOURCES_HOME/payara-web/
+
+cp $PAYARA_HOME/appserver/distributions/payara-web-ml/target/payara-web-ml-$NEW_VERSION.zip $SOURCES_HOME/payara-web-ml/
+cp $PAYARA_HOME/appserver/distributions/payara-web-ml/pom.xml $SOURCES_HOME/payara-web-ml/
+
+cp $PAYARA_HOME/nucleus/distributions/payara-minimal/target/payara-minimal-$NEW_VERSION.zip $SOURCES_HOME/payara-minimal/
+cp $PAYARA_HOME/nucleus/distributions/payara-minimal/pom.xml $SOURCES_HOME/payara-minimal/
+
+cp $PAYARA_HOME/appserver/extras/embedded/web/target/payara-embedded-web-$NEW_VERSION.jar $SOURCES_HOME/web/
+cp $PAYARA_HOME/appserver/extras/embedded/web/pom.xml $SOURCES_HOME/web/
+
+cp $PAYARA_HOME/appserver/extras/embedded/payara-micro/target/payara-micro-$NEW_VERSION.jar $SOURCES_HOME/micro/
+cp $PAYARA_HOME/appserver/extras/embedded/payara-micro/pom.xml $SOURCES_HOME/micro/
+
+cp $PAYARA_HOME/appserver/extras/embedded/all/target/payara-embedded-all-$NEW_VERSION.jar $SOURCES_HOME/all/
+cp $PAYARA_HOME/appserver/extras/embedded/all/pom.xml $SOURCES_HOME/all/
+
+
+
+#copy the javadocs and source into each directory
+cd $SOURCES_HOME
+cp payara-javadoc payara/payara-$NEW_VERSION-javadoc.zip
+cp payara-javadoc payara-ml/payara-ml-$NEW_VERSION-javadoc.zip
+cp payara-javadoc payara-web/payara-web-$NEW_VERSION-javadoc.zip
+cp payara-javadoc payara-web-ml/payara-web-ml-$NEW_VERSION-javadoc.zip
+cp payara-javadoc payara-minimal/payara-minimal-$NEW_VERSION-javadoc.zip
+cp payara-javadoc web/payara-embedded-web-$NEW_VERSION-javadoc.zip
+#micro has its own so it will be done later
+cp payara-javadoc all/payara-embedded-all-$NEW_VERSION-javadoc.zip
+
+cp  payara-micro-$NEW_VERSION-javadoc.zip /micro/
+
+cp payara-sources.zip payara/payara-$NEW_VERSION-sources.zip
+cp payara-sources.zip payara-ml/payara-ml-$NEW_VERSION-sources.zip
+cp payara-sources.zip payara-web/payara-web-$NEW_VERSION-sources.zip
+cp payara-sources.zip payara-web-ml/payara-web-ml-$NEW_VERSION-sources.zip
+cp payara-sources.zip payara-minimal/payara-minimal-$NEW_VERSION-sources.zip
+cp payara-sources.zip web/payara-embedded-web-$NEW_VERSION-sources.zip
+cp payara-sources.zip micro/payara-micro-$NEW_VERSION-sources.zip
+cp payara-sources.zip all/payara-embedded-all-$NEW_VERSION-sources.zip
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,106 @@
+#!/bin/sh
+echo "GOOBS"
+
+
+
+#assign all the variables
+while getopts ":p:o:n:b:" opt; do
+
+	case $opt in 
+		p)
+			echo $OPTARG
+			echo "HELLOES"
+			PAYARA_HOME=$OPTARG
+			;;
+		o)
+			echo $OPTARG
+			echo "HELLOES"
+			OLD_VERSION=$OPTARG
+			;;
+		n)
+			echo $OPTARG
+			echo "HELLOES"
+			NEW_VERSION=$OPTARG
+			;;
+
+	esac
+done
+
+
+echo "ASSIGNED VARS, BEGINNING BUILDING OF RELEASE CANDIDATE "
+
+
+#Declare main variables
+
+
+#create format for sed command
+format(){
+	echo $1
+	initial=""
+	IFS='.' read -ra ADDR <<< "$1"
+	for i in "${ADDR[@]}"; do
+	    # process "$i"
+		echo $i
+		initial=$initial\\.$i
+	done
+	echo $initial
+}
+
+
+incrementVersion(){
+echo $1
+	while IFS='' read -r line || [[ -n "$line" ]]; do
+   	 echo "Text read from file: $line"
+		if [$line==*"major_version"*] 
+		then
+			echo "boo"
+		fi
+	done < "$1"
+}
+
+
+
+tagBuild(){
+	git tag payara-server-$NEW_VERSION.RC1
+}
+
+
+netbeanVersion(){
+	cd $PAYARA_HOME/appserver/distributions/payara/target/
+	repackage "payara"
+	cd $PAYARA_HOME/appserver/distributions/payara-ml/target/
+	repackage "payara-ml"
+	cd $PAYARA_HOME/appserver/distributions/payara-web/target/
+	repackage "payara-web"
+	cd $PAYARA_HOME/appserver/distributions/payara-web-ml/target/
+	repackage "payara-web-ml"
+	cd $PAYARA_HOME/appserver/extras/embedded/web/target/
+	#mv
+	cd $PAYARA_HOME/appserver/extras/embedded/payara-micro/target/
+	mv payara-micro.jar payara-micro-$NEW_VERSION.jar
+	cd $PAYARA_HOME/appserver/extras/embedded/all/target/
+	#mv
+	cd $PAYARA_HOME/nucleus/distributions/payara-minimal/target/
+	mv payara-minimal.zip payara-minimal-$NEW_VERSION.zip
+
+	#git archive --format zip --output $HOME/payara-source-$version.zip $branchname
+
+}
+
+
+
+repackage(){
+	echo "***UNZIPPING PACKAGES FOR "$1"***"
+	unzip $1.zip
+	mv payara41/glassfish/lib/install/applications/__admingui/WEB-INF/lib/console-core-$NEW_VERSION.jar payara41/glassfish/lib/install/applications/__admingui/WEB-INF/lib/console-core-4.1.1.jar
+	zip -r $1-$NEW_VERSION.zip payara41/
+	rm -r payara41/
+}
+
+
+
+#MAIN BODY
+netbeanVersion 
+
+
+
