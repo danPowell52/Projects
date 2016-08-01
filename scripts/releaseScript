@@ -75,11 +75,11 @@ netbeanVersion(){
 	cd $PAYARA_HOME/appserver/distributions/payara-web-ml/target/
 	repackage "payara-web-ml"
 	cd $PAYARA_HOME/appserver/extras/embedded/web/target/
-	#mv
-	cd $PAYARA_HOME/appserver/extras/embedded/payara-micro/target/
+	mv payara-embedded-web.jar payara-embedded-web-$NEW_VERSION.jar
+	cd $PAYARA_HOME/appserver/extras/embedded/payara-micro-core/target/
 	mv payara-micro.jar payara-micro-$NEW_VERSION.jar
 	cd $PAYARA_HOME/appserver/extras/embedded/all/target/
-	#mv
+	mv payara-embedded-all.jar payara-embedded-all-$NEW_VERSION.jar
 	cd $PAYARA_HOME/nucleus/distributions/payara-minimal/target/
 	mv payara-minimal.zip payara-minimal-$NEW_VERSION.zip
 
